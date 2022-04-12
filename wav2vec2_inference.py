@@ -2,8 +2,8 @@ import soundfile as sf
 import torch
 import time
 from transformers import Wav2Vec2Processor, Wav2Vec2ForCTC
-# device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-device = "cpu"
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+# device = "cpu"
 start_time = time.time()
 
 
