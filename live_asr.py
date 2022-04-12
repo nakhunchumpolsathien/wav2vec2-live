@@ -7,7 +7,7 @@ import copy
 import time
 from sys import exit
 import contextvars
-from queue import  Queue
+from queue import Queue
 
 
 class LiveWav2Vec2():
@@ -116,7 +116,7 @@ class LiveWav2Vec2():
 if __name__ == "__main__":
     print("Live ASR")
 
-    asr = LiveWav2Vec2("facebook/wav2vec2-large-960h-lv60-self")
+    asr = LiveWav2Vec2(".models/checkpoint-423000")
     
     asr.start()
 
