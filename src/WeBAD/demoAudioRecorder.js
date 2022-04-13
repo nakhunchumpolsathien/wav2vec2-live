@@ -16,6 +16,20 @@ let audioPlay = true
 // URL.createObjectURL -> to create a URL from a blob, which we can use as audio src
 
 
+function getFileName() {
+  var date = new Date();
+  var dateStr =
+  	date.getFullYear()+ 
+    ("00" + (date.getMonth() + 1)).slice(-2) + "" +
+    ("00" + date.getDate()).slice(-2) + "" +"T" +
+    ("00" + date.getHours()).slice(-2) + "" +
+    ("00" + date.getMinutes()).slice(-2) + "" +
+    ("00" + date.getSeconds()).slice(-2) + "" +
+    ("00" + date.getMilliseconds()).slice(-2) + ".wav";
+  return dateStr;
+}
+
+
 function audioRecorder(stream) {
 
   recorder = new MediaRecorder(stream)
