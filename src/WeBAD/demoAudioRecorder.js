@@ -15,7 +15,6 @@ let audioPlay = true
 // MediaRecorder.stop -> stop recording (this will generate a blob of data)
 // URL.createObjectURL -> to create a URL from a blob, which we can use as audio src
 
-
 function getFileName() {
   var date = new Date();
   var dateStr =
