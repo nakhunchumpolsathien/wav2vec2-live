@@ -35,9 +35,3 @@ class Wave2Vec2Inference():
         return self.buffer_to_text(audio_input)
 
 
-if __name__ == "__main__":
-    print("Model test")
-    asr = Wave2Vec2Inference("models/checkpoint-423000")
-    text = asr.file_to_text("/Users/Nakhun/Projects/wav2vec2-live/audios/th_test_audio_1min.wav")
-    print(text)
-    print("--- %s seconds ---" % (time.time() - start_time))
