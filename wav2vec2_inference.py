@@ -1,16 +1,14 @@
-import soundfile as sf
-import torch
 import time
+import torch
+import warnings
+import soundfile as sf
 from transformers import Wav2Vec2Processor, Wav2Vec2ForCTC
+
+warnings.filterwarnings("ignore")
+
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-# device = "cpu"
 start_time = time.time()
 
-
-# Improvements:
-# - gpu / cpu flag
-# - convert non 16 khz sample rates
-# - inference time log
 
 class Wave2Vec2Inference():
     def __init__(self, model_name):
@@ -21,7 +19,8 @@ class Wave2Vec2Inference():
         if len(audio_buffer) == 0:
             return ""
 
-        inputs = self.processor(torch.tensor(audio_buffer), sampling_rate=16_000, return_tensors="pt", padding=True).to(device)
+        inputs = self.processor(torch.tensor(audio_buffer), sampling_rate=16_000,
+                                return_tensors="pt", padding=True).to(device)
 
         with torch.no_grad():
             logits = self.model(inputs.input_values).logits
@@ -38,7 +37,7 @@ class Wave2Vec2Inference():
 
 if __name__ == "__main__":
     print("Model test")
-    asr = Wave2Vec2Inference(".models/checkpoint-423000")
-    text = asr.file_to_text("audios/th_test_audio_1min.wav")
+    asr = Wave2Vec2Inference("models/checkpoint-423000")
+    text = asr.file_to_text("/Users/Nakhun/Projects/wav2vec2-live/audios/th_test_audio_1min.wav")
     print(text)
     print("--- %s seconds ---" % (time.time() - start_time))

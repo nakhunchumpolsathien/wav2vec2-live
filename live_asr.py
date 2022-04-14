@@ -116,7 +116,7 @@ class LiveWav2Vec2():
 if __name__ == "__main__":
     print("Live ASR")
 
-    asr = LiveWav2Vec2(".models/checkpoint-423000")
+    asr = LiveWav2Vec2("models/checkpoint-423000")
     
     asr.start()
 

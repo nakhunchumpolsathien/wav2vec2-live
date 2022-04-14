@@ -13,10 +13,10 @@ def write_wav(blob):
         f.write(blob)
 
 
-def get_file_name(log_dir='audios/from_front'):
+def get_file_name(log_dir='../../audios/from_front'):
     now = datetime.now(pytz.timezone('Asia/Bangkok'))
     name = now.strftime('%Y%m%dT%H%M%S.%f')
-    file_name = f'{name}.wav'
+    file_name = f'{name}.webm'
 
     if not os.path.isdir(log_dir):
         os.mkdir(log_dir)
@@ -32,6 +32,7 @@ def write_log(log_path, content):
 
 app = Flask(__name__)
 CORS(app)
+
 
 @app.route('/', methods=['POST'])
 def home():
