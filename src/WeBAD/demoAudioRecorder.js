@@ -66,9 +66,9 @@ function onRecordingReady(e) {
     audio.src = URL.createObjectURL(e.data)
 
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", 'http://127.0.0.1:8080/', true);
+    xhr.open("POST", 'http://127.0.0.1:8080/asr', true);
 
-    xhr.setRequestHeader("Content-Type", "audio/wav");
+    xhr.setRequestHeader("Content-Type", "video/webm");
 
     xhr.onreadystatechange = function() { // Call a function when the state changes.
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {

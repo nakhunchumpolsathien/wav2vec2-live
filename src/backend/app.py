@@ -1,22 +1,32 @@
 # coding: utf-8
 import os
-import wave
 import pytz
+import time
+import torch
+import warnings
+from io import BytesIO
 from flask import Flask
 from flask import request
-from datetime import datetime
 from flask_cors import CORS
+from datetime import datetime
+from pydub import AudioSegment
+from tools.wav2vec2_inference import Wave2Vec2Inference
 
 
 def write_wav(blob):
-    with open(get_file_name(), 'ab') as f:
-        f.write(blob)
+    buf = BytesIO()
+    opus_data = BytesIO(blob)
+    audio = AudioSegment.from_file(opus_data, codec="opus")
+    audio = audio.set_channels(1)
+    audio = audio.set_frame_rate(16000)
+    # audio.export(get_file_name(), format='wav')
+    return audio.export(buf, format='wav')
 
 
 def get_file_name(log_dir='../../audios/from_front'):
     now = datetime.now(pytz.timezone('Asia/Bangkok'))
     name = now.strftime('%Y%m%dT%H%M%S.%f')
-    file_name = f'{name}.webm'
+    file_name = f'{name}.wav'
 
     if not os.path.isdir(log_dir):
         os.mkdir(log_dir)
@@ -33,14 +43,20 @@ def write_log(log_path, content):
 app = Flask(__name__)
 CORS(app)
 
+warnings.filterwarnings("ignore")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+asr = Wave2Vec2Inference("../../models/checkpoint-423000")
 
-@app.route('/', methods=['POST'])
+
+@app.route('/asr', methods=['POST'])
 def home():
-    log_dir = ''
+    start_time = time.time()
 
     if request.method == 'POST':
-        write_wav(request.data)
-    return "<h1>HikVisionAPI<h1>"
+        text = asr.file_to_text(write_wav(request.data))
+        print(text)
+        print((time.time() - start_time))
+    return "ASR"
 
 
 if __name__ == '__main__':

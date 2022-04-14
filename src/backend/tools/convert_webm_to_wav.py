@@ -10,6 +10,7 @@ def convert_webm_to_wav(file_path='/Users/Nakhun/Projects/wav2vec2-live/audios/f
     audio = audio.set_channels(1)
     audio = audio.set_frame_rate(16000)
 
+
     audio.export('yes_5.wav', format='wav')
 
 
