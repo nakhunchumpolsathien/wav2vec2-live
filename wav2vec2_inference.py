@@ -34,7 +34,7 @@ class Wave2Vec2Inference():
         assert samplerate == 16000
         return self.buffer_to_text(audio_input)
 
-    
+
 if __name__ == "__main__":
     print("Model test")
     asr = Wave2Vec2Inference("models/checkpoint-423000")
