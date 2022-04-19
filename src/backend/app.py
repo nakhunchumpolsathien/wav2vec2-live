@@ -6,11 +6,12 @@ import torch
 import warnings
 from io import BytesIO
 from flask import Flask
+from pprint import pprint
 from flask import request
 from flask_cors import CORS
 from datetime import datetime
 from pydub import AudioSegment
-from tools.wav2vec2_inference import Wave2Vec2Inference
+from tools.wav2vec2_lm_inference import Wave2Vec2Inference
 
 
 def write_wav(blob):
@@ -57,6 +58,20 @@ def home():
         print(text)
         print((time.time() - start_time))
     return "ASR"
+
+
+@app.route('/asr_json', methods=['POST'])
+def return_json():
+    if request.method == 'POST':
+        start_time = time.time()
+        text = asr.file_to_text(write_wav(request.data))
+        res = {'result': text,
+               'character_count': len(''.join(text.split())),
+               'receive_time': start_time,
+               'return_time': time.time()}
+        pprint(res)
+        return res
+    return 'ASR JSON'
 
 
 if __name__ == '__main__':
