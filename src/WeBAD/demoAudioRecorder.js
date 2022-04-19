@@ -66,7 +66,7 @@ function onRecordingReady(e) {
     audio.src = URL.createObjectURL(e.data)
 
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", 'http://127.0.0.1:8080/asr', true);
+    xhr.open("POST", 'http://192.168.10.44:8080/asr', true);
 
     xhr.setRequestHeader("Content-Type", "video/webm");
 
