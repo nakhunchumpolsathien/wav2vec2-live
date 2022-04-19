@@ -1,12 +1,13 @@
 # coding: utf-8
 import os
+import json
 import pytz
 import time
 import torch
 import warnings
+import pprint
 from io import BytesIO
 from flask import Flask
-from pprint import pprint
 from flask import request
 from flask_cors import CORS
 from datetime import datetime
@@ -21,7 +22,7 @@ def write_wav(blob):
     audio = audio.set_channels(1)
     audio = audio.set_frame_rate(16000)
     # audio.export(get_file_name(), format='wav')
-    return audio.export(buf, format='wav')
+    return {'file': audio.export(buf, format='wav'), 'duration': audio.duration_seconds}
 
 
 def get_file_name(log_dir='../../audios/from_front'):
@@ -46,17 +47,22 @@ CORS(app)
 
 warnings.filterwarnings("ignore")
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-asr = Wave2Vec2Inference("../../models/checkpoint-423000")
+asr = Wave2Vec2Inference("checkpoint-900000")
 
 
 @app.route('/asr', methods=['POST'])
 def home():
-    start_time = time.time()
-
     if request.method == 'POST':
-        text = asr.file_to_text(write_wav(request.data))
-        print(text)
-        print((time.time() - start_time))
+        start_time = datetime.now()
+        wav = write_wav(request.data)
+        text = asr.file_to_text(wav['file'])
+        res = {'result': text,
+               'character_count': len(''.join(text.split())),
+               'audio_duration': wav['duration'],
+               'receive_time': start_time.isoformat(),
+               'return_time': datetime.now().isoformat()}
+        print(res)
+        return json.dumps(res)
     return "ASR"
 
 
@@ -65,7 +71,7 @@ def return_json():
     if request.method == 'POST':
         start_time = time.time()
         text = asr.file_to_text(write_wav(request.data))
-        res = {'result': text,
+        res = {'result': text.encode('utf8'),
                'character_count': len(''.join(text.split())),
                'receive_time': start_time,
                'return_time': time.time()}
@@ -76,4 +82,4 @@ def return_json():
 
 if __name__ == '__main__':
     # app.run()
-    app.run(host="127.0.0.1", port=8080, debug=False)
+    app.run(host="192.168.10.44", port=8080, debug=False)
