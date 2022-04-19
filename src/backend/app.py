@@ -19,10 +19,11 @@ def write_wav(blob):
     buf = BytesIO()
     opus_data = BytesIO(blob)
     audio = AudioSegment.from_file(opus_data, codec="opus")
+    duration = audio.duration_seconds
     audio = audio.set_channels(1)
     audio = audio.set_frame_rate(16000)
     # audio.export(get_file_name(), format='wav')
-    return {'file': audio.export(buf, format='wav'), 'duration': audio.duration_seconds}
+    return {'file': audio.export(buf, format='wav'), 'duration': duration}
 
 
 def get_file_name(log_dir='../../audios/from_front'):
@@ -60,7 +61,8 @@ def home():
                'character_count': len(''.join(text.split())),
                'audio_duration': wav['duration'],
                'receive_time': start_time.isoformat(),
-               'return_time': datetime.now().isoformat()}
+               'return_time': datetime.now().isoformat(),
+               'transcribe_time': (datetime.now()-start_time).total_seconds()}
         print(res)
         return json.dumps(res)
     return "ASR"
